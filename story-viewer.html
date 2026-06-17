@@ -70,7 +70,7 @@ html, body {
   object-fit:cover;
   user-select: none;
   -webkit-user-drag: none;
-  transition: opacity 0.45s ease;
+  transition: opacity 0.15s ease;
   opacity: 1;
 }
 
@@ -414,7 +414,7 @@ html, body {
 
 .food-wrap{
     position:fixed;
-    left:1260px;
+    left:1250px;
     top:290px;
     width:555px;
     height:920px;
@@ -424,8 +424,8 @@ html, body {
 
 .myeong-wrap{
     position:fixed;
-    left:1740px;
-    top:405px;
+    left:1710px;
+    top:410px;
     width:520px;
     height:720px;
     z-index:999;
@@ -489,10 +489,11 @@ html, body {
   <!-- IMAGE STAGE -->
   <div class="image-stage" id="imageStage">
 
-    <video id="bgVideo"
-       autoplay
-       loop
-       playsinline>
+   <video
+ preload="metadata"
+ autoplay
+ loop
+ playsinline>
     autoplay
     loop
     playsinline>
@@ -667,7 +668,7 @@ html, body {
           isTransitioning = false;
         }, 450);
       });
-    }, 400);
+    }, 100);
   }
 
   // Update buttons, dots, page number
