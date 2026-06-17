@@ -3,7 +3,7 @@
   // Uses localStorage to persist audio state across pages.
   // Exposes bgmPause() and bgmResume() for story-viewer.html to control on slide 4.
 
-  const audioSrc = 'foto/audio.mp3';
+  const audio = new Audio("audio.mp3");
   const storageKey_time = 'bgmTime';
   const storageKey_shouldPlay = 'bgmMustPlay';
 
