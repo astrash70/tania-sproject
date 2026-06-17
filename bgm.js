@@ -1,9 +1,6 @@
 (function() {
-  // === Background Music Controller ===
-  // Uses localStorage to persist audio state across pages.
-  // Exposes bgmPause() and bgmResume() for story-viewer.html to control on slide 4.
 
-  const audio = new Audio("audio.mp3");
+  const audioSrc = "audio.mp3";
   const storageKey_time = 'bgmTime';
   const storageKey_shouldPlay = 'bgmMustPlay';
 
@@ -11,7 +8,6 @@
   let isPausedBySlide4 = false;
   let saveInterval = null;
 
-  // --- Create audio element ---
   function createAudio() {
     const el = document.createElement('audio');
     el.loop = true;
@@ -21,28 +17,26 @@
     return el;
   }
 
-  // --- Resume from saved position if needed ---
   function init() {
     audio = createAudio();
     audio.src = audioSrc;
 
-    const savedTime = parseFloat(localStorage.getItem(storageKey_time)) || 0;
-    const shouldPlay = localStorage.getItem(storageKey_shouldPlay) === 'true';
+    const savedTime =
+      parseFloat(localStorage.getItem(storageKey_time)) || 0;
+
+    const shouldPlay =
+      localStorage.getItem(storageKey_shouldPlay) === 'true';
 
     if (savedTime > 0) {
       audio.currentTime = savedTime;
     }
 
     if (shouldPlay) {
-      audio.play().catch(function() {
-        // Autoplay may be blocked; we try again on user interaction
-      });
+      audio.play().catch(() => {});
     }
 
-    // Save current time periodically
     saveInterval = setInterval(saveState, 1000);
 
-    // Save on page unload
     window.addEventListener('beforeunload', saveAndPersist);
     window.addEventListener('pagehide', saveAndPersist);
   }
@@ -63,7 +57,7 @@
 
   // --- Public API for story-viewer.html ---
 
-  // --- Public API for graduation-landing.html to trigger play on START button ---
+  // --- Public API for index.html to trigger play on START button ---
   window.bgmStart = function() {
     localStorage.setItem(storageKey_shouldPlay, 'true');
     if (audio && audio.paused) {
