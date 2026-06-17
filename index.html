@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100vw;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ===== FULL PAGE WRAPPER ===== */
+.page,
+.page-shell,
+.page-frame,
+.hero-card {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: url('foto/opn.png') center center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== SUBTLE OVERLAY (just enough for readability) ===== */
+.page-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(13, 27, 61, 0.50) 0%,
+    rgba(13, 27, 61, 0.18) 35%,
+    rgba(13, 27, 61, 0.10) 50%,
+    rgba(13, 27, 61, 0.18) 65%,
+    rgba(13, 27, 61, 0.45) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ===== STARS CONTAINER ===== */
+#starsContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
+  box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.3);
+}
+
+.star:nth-child(3n) { width: 4px; height: 4px; box-shadow: 0 0 7px 2px rgba(255, 255, 255, 0.4); }
+
+@keyframes twinkle {
+  0%   { opacity: 0.15; transform: scale(0.7); }
+  100% { opacity: 1;   transform: scale(1.3); }
+}
+
+/* ===== SPARKLES ===== */
+.sparkle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.sparkle::before, .sparkle::after {
+  content: '';
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.sparkle::before {
+  width: 100%;
+  height: 2px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  box-shadow: 0 0 5px 1px rgba(255, 215, 230, 0.4);
+}
+
+.sparkle::after {
+  width: 2px;
+  height: 100%;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  box-shadow: 0 0 5px 1px rgba(255, 215, 230, 0.4);
+}
+
+.sparkle-1 { top: 12%; left: 12%; animation: sparkleFloat 4.5s ease-in-out infinite; }
+.sparkle-2 { top: 20%; right: 18%; animation: sparkleFloat 5.2s ease-in-out infinite 1.5s; }
+.sparkle-3 { bottom: 25%; left: 30%; animation: sparkleFloat 4s ease-in-out infinite 2.8s; }
+.sparkle-4 { top: 35%; right: 8%; animation: sparkleFloat 4.8s ease-in-out infinite 0.8s; }
+
+@keyframes sparkleFloat {
+  0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg); }
+  25%  { opacity: 0.7; transform: scale(1) rotate(45deg); }
+  50%  { opacity: 0.2; transform: scale(0.6) rotate(90deg); }
+  75%  { opacity: 0.6; transform: scale(0.9) rotate(135deg); }
+}
+
+/* ===== FLOATING STARS ===== */
+.floating-star {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.35;
+  animation: floatStar 7s ease-in-out infinite;
+  color: #fff;
+  font-size: 16px;
+}
+
+.floating-star:nth-child(1) { top: 8%; left: 5%; animation-delay: 0s; }
+.floating-star:nth-child(2) { top: 6%; right: 12%; animation-delay: 2s; font-size: 20px; }
+.floating-star:nth-child(3) { bottom: 30%; left: 4%; animation-delay: 4s; font-size: 14px; }
+.floating-star:nth-child(4) { bottom: 35%; right: 5%; animation-delay: 1s; font-size: 18px; }
+.floating-star:nth-child(5) { top: 42%; left: 2%; animation-delay: 3s; font-size: 12px; }
+
+@keyframes floatStar {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.3; }
+  25%  { transform: translateY(-10px) rotate(8deg) scale(1.1); opacity: 0.6; }
+  50%  { transform: translateY(-3px) rotate(-4deg) scale(0.95); opacity: 0.35; }
+  75%  { transform: translateY(-15px) rotate(6deg) scale(1.05); opacity: 0.5; }
+}
+
+/* ===== MOON GLOW ===== */
+.moon {
+  position: absolute;
+  top: 3%;
+  right: 15%;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fffde7, #fce4ec);
+  box-shadow:
+    0 0 25px 10px rgba(255, 235, 210, 0.25),
+    0 0 50px 20px rgba(255, 220, 200, 0.10);
+  z-index: 2;
+  pointer-events: none;
+  animation: moonPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes moonPulse {
+  0%   { box-shadow: 0 0 25px 10px rgba(255, 235, 210, 0.25), 0 0 50px 20px rgba(255, 220, 200, 0.10); }
+  100% { box-shadow: 0 0 35px 16px rgba(255, 235, 210, 0.4), 0 0 65px 28px rgba(255, 220, 200, 0.18); }
+}
+
+/* ===== CITY SILHOUETTE ===== */
+.city-silhouette {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65px;
+  z-index: 4;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 2px;
+  padding: 0 20px;
+  opacity: 0.35;
+}
+
+.city-building {
+  width: var(--w, 16px);
+  height: var(--h, 35px);
+  background: #1a1a2e;
+  border-radius: 2px 2px 0 0;
+  position: relative;
+}
+
+.city-building::before {
+  content: '';
+  position: absolute;
+  top: var(--y, 10%);
+  left: 20%;
+  width: 2px;
+  height: 2px;
+  background: #ffe082;
+  border-radius: 50%;
+  box-shadow:
+    5px var(--y2, 8px) 0 0 #ffe082,
+    -3px var(--y3, 12px) 0 0 #ffe082,
+    8px var(--y4, 5px) 0 0 #ffe082;
+  animation: lightCity 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes lightCity {
+  0%   { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* ===== 3-COLUMN LAYOUT ===== */
+.content-grid {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ===== NAV ===== */
+.nav-bar {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  display: flex;
+  gap: 11px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0 12px;
+}
+
+.nav-item {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  padding: 8px 22px;
+  border-radius: 20px;
+  letter-spacing: 0.6px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(3px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.nav-item:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: 0 0 16px 3px rgba(245, 163, 199, 0.25), 0 0 6px 1px rgba(245, 163, 199, 0.15);
+  border-color: rgba(245, 163, 199, 0.25);
+  transform: translateY(-1px);
+}
+
+/* ===== LEFT COLUMN ===== */
+.left-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 18px 0 142px;
+  transform: translateY(-120px);
+}
+
+.main-title {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(3.6rem, 8.4vw, 6.8rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.1;
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(13, 27, 61, 0.3);
+  margin-bottom: 17px;
+}
+
+.sub-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.33rem, 2.4vw, 1.75rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin-bottom: 31px;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+  max-width: none;
+}
+
+.start-btn {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.2rem, 1.6vw, 1.4rem);
+  font-weight: 600;
+  color: #0d1b3d;
+  background: linear-gradient(135deg, #f5a3c7, #f7b5d3);
+  padding: 18px 56px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 20px rgba(245, 163, 199, 0.4);
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.start-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.start-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 32px rgba(245, 163, 199, 0.5);
+}
+
+.start-btn:hover::after {
+  transform: translateX(100%);
+}
+
+.start-btn:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* ===== CENTER COLUMN - GRADUATION PHOTO ===== */
+.center-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  position: relative;
+}
+
+.photo-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-glow {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 163, 199, 0.2) 0%, rgba(245, 163, 199, 0.05) 50%, transparent 70%);
+  animation: glowPulse 3.5s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes glowPulse {
+  0%   { transform: scale(0.95); opacity: 0.6; }
+  100% { transform: scale(1.1); opacity: 1; }
+}
+
+.grad-photo {
+  width: clamp(140px, 20vw, 280px);
+  height: clamp(140px, 20vw, 280px);
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.3),
+    0 0 50px 12px rgba(245, 163, 199, 0.12);
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+/* ===== DOODLES AROUND PHOTO ===== */
+.doodle {
+  position: absolute;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0.4;
+  animation: doodleFloat 5s ease-in-out infinite;
+  color: #fff;
+}
+
+.doodle-1  { top: -18px; left: -10px; font-size: 22px; animation-delay: 0s; }
+.doodle-2  { top: -25px; right: -8px; font-size: 18px; animation-delay: 1.5s; }
+.doodle-3  { bottom: -20px; left: -5px; font-size: 20px; animation-delay: 3s; }
+.doodle-4  { bottom: -18px; right: -12px; font-size: 16px; animation-delay: 0.8s; }
+.doodle-5  { top: 5px; left: -32px; font-size: 14px; animation-delay: 2.2s; }
+.doodle-6  { top: 8px; right: -32px; font-size: 18px; animation-delay: 4s; }
+
+@keyframes doodleFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+  50%  { transform: translateY(-6px) rotate(6deg); opacity: 0.6; }
+}
+
+/* ===== RIGHT COLUMN ===== */
+.right-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+}
+
+.sticky-note {
+  position: relative;
+  width: clamp(266px, 33.6vw, 434px);
+  background: #f8eedf;
+  border-radius: 8px;
+  padding: 39px 28px 34px;
+  transform: rotate(5deg);
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s ease;
+}
+
+.sticky-note:hover {
+  transform: rotate(3deg) scale(1.02);
+}
+
+.sticky-pin {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f5a3c7, #f08db8);
+  box-shadow:
+    0 2px 8px rgba(245, 163, 199, 0.5),
+    0 0 0 2px rgba(255, 255, 255, 0.6);
+  z-index: 2;
+}
+
+.sticky-pin::after {
+  content: '';
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.sticky-text {
+  font-family: 'Patrick Hand', cursive;
+  font-size: clamp(1.19rem, 2.1vw, 1.51rem);
+  color: #2c2c2c;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.sticky-text .heart {
+  color: #f5a3c7;
+}
+
+/* ===== SCALLOP BORDER ===== */
+.scallop-border {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 34px;
+  z-index: 10;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.scallop-border svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 820px) {
+  .content-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    padding: 0;
+  }
+
+  .nav-bar { top: 8px; gap: 7px; }
+  .nav-item { font-size: 15px; padding: 7px 17px; }
+
+  .left-col { padding: 0 14px 0 80px; }
+  .main-title { font-size: clamp(2.5rem, 5.6vw, 4.2rem); }
+  .sub-text { font-size: clamp(1.05rem, 2vw, 1.4rem); margin-bottom: 22px; }
+  .start-btn { padding: 14px 39px; font-size: clamp(1.05rem, 1.7vw, 1.26rem); }
+
+  .grad-photo { width: clamp(100px, 18vw, 180px); height: clamp(100px, 18vw, 180px); }
+
+  .sticky-note { width: clamp(210px, 28vw, 308px); padding: 31px 22px 25px; }
+  .sticky-text { font-size: clamp(1rem, 1.7vw, 1.33rem); }
+
+  .moon { width: 40px; height: 40px; top: 3%; right: 10%; }
+  .city-silhouette { height: 45px; }
+  .scallop-border { height: 24px; }
+}
+
+@media (max-width: 500px) {
+  .page,
+  .page-shell,
+  .page-frame,
+  .hero-card { min-height: 100vh; height: auto; }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 8px;
+    padding: 80px 0 30px;
+    min-height: 100vh;
+  }
+
+  .nav-bar { top: 6px; gap: 4px; }
+  .nav-item { font-size: 9px; padding: 4px 10px; letter-spacing: 0; }
+
+  .left-col { align-items: center; text-align: center; padding: 10px 0; }
+  .main-title { font-size: clamp(2.5rem, 12.6vw, 3.36rem); text-align: center; }
+  .sub-text { text-align: center; max-width: 100%; font-size: clamp(0.98rem, 4.2vw, 1.19rem); }
+  .start-btn { padding: 11px 34px; font-size: clamp(0.84rem, 3.5vw, 1.05rem); }
+
+  .center-col { padding: 10px 0; }
+  .grad-photo { width: clamp(120px, 40vw, 180px); height: clamp(120px, 40vw, 180px); }
+
+  .right-col { padding: 10px 0; }
+  .sticky-note { width: clamp(168px, 70vw, 252px); padding: 22px 20px 20px; transform: rotate(4deg); }
+  .sticky-text { font-size: clamp(0.77rem, 3.5vw, 1.05rem); }
+  .sticky-pin { width: 25px; height: 25px; top: -13px; }
+  .sticky-pin::after { top: 7px; left: 8px; width: 10px; height: 10px; }
+
+  .moon { width: 30px; height: 30px; top: 4%; right: 8%; }
+  .city-silhouette { height: 30px; opacity: 0.25; }
+  .scallop-border { height: 18px; }
+
+  .doodle { font-size: 14px; }
+  .floating-star { font-size: 12px; }
+  .sparkle { width: 8px; height: 8px; }
+}
+
+/* ===== PARALLAX EFFECT ===== */
+@media (hover: hover) {
+  .page[data-parallax="true"] {
+    transition: background-position 0.15s ease-out;
+  }
+}
+
+/* ===== CINEMATIC PAGE TRANSITION ===== */
+.page-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: #0d1b3d;
+  opacity: 0;
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-transition.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.page-transition::before {
+  content: '✦';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 40px;
+  color: rgba(245, 163, 199, 0.6);
+  animation: transitionSparkle 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+@keyframes transitionSparkle {
+  0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(2) rotate(180deg); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.5) rotate(360deg); opacity: 0; }
+}
+
+@keyframes fadeOutContent {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.95); }
+}
+
+.fade-out-content {
+  animation: fadeOutContent 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+</style>
+</head>
+<body>
+
+<div class="page page-shell page-frame hero-card" id="page">
+
+  <!-- OVERLAY -->
+  <div class="page-overlay"></div>
+
+  <!-- MOON -->
+  <div class="moon"></div>
+
+  <!-- STARS -->
+  <div class="stars-container" id="starsContainer"></div>
+
+  <!-- SPARKLES -->
+  <div class="sparkle sparkle-1"></div>
+  <div class="sparkle sparkle-2"></div>
+  <div class="sparkle sparkle-3"></div>
+  <div class="sparkle sparkle-4"></div>
+
+  <!-- FLOATING STARS -->
+  <span class="floating-star">✧</span>
+  <span class="floating-star">✦</span>
+  <span class="floating-star">✧</span>
+  <span class="floating-star">✦</span>
+  <span class="floating-star">✧</span>
+
+  <!-- CITY SILHOUETTE -->
+  <div class="city-silhouette">
+    <div class="city-building" style="--w:12px;--h:30px;--y:6px;--y2:10px;--y3:12px;--y4:8px;"></div>
+    <div class="city-building" style="--w:18px;--h:50px;--y:8px;--y2:12px;--y3:10px;--y4:14px;"></div>
+    <div class="city-building" style="--w:8px;--h:22px;--y:5px;--y2:9px;--y3:7px;--y4:11px;"></div>
+    <div class="city-building" style="--w:24px;--h:58px;--y:10px;--y2:6px;--y3:14px;--y4:18px;"></div>
+    <div class="city-building" style="--w:10px;--h:26px;--y:7px;--y2:11px;--y3:9px;--y4:5px;"></div>
+    <div class="city-building" style="--w:16px;--h:42px;--y:9px;--y2:13px;--y3:7px;--y4:16px;"></div>
+    <div class="city-building" style="--w:7px;--h:18px;--y:4px;--y2:8px;--y3:6px;--y4:10px;"></div>
+    <div class="city-building" style="--w:20px;--h:52px;--y:11px;--y2:15px;--y3:9px;--y4:7px;"></div>
+    <div class="city-building" style="--w:12px;--h:34px;--y:5px;--y2:9px;--y3:13px;--y4:7px;"></div>
+    <div class="city-building" style="--w:14px;--h:38px;--y:8px;--y2:12px;--y3:6px;--y4:15px;"></div>
+    <div class="city-building" style="--w:9px;--h:20px;--y:6px;--y2:10px;--y3:8px;--y4:4px;"></div>
+    <div class="city-building" style="--w:22px;--h:55px;--y:12px;--y2:8px;--y3:16px;--y4:10px;"></div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav-bar">
+    <a class="nav-item" href="#">HOME</a>
+    <a class="nav-item" href="#">DREAMS</a>
+    <a class="nav-item" href="#">MEMORIES</a>
+    <a class="nav-item" href="#">GALLERY</a>
+    <a class="nav-item" href="#">FOR YOU</a>
+  </nav>
+
+  <!-- 3-COLUMN CONTENT -->
+  <div class="content-grid">
+
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+      <h1 class="main-title">Once upon<br />a deadline...</h1>
+      <p class="sub-text">There was a girl<br />with too many dreams.</p>
+      <a class="start-btn" href="#" id="startJourneyBtn">START JOURNEY</a>
+    </div>
+
+    <!-- CENTER COLUMN - GRADUATION PHOTO -->
+    <div class="center-col">
+      <div class="photo-wrapper">
+        <div class="photo-glow"></div>
+     
+        <span class="doodle doodle-1">✦</span>
+        <span class="doodle doodle-2">♡</span>
+        <span class="doodle doodle-3">✧</span>
+        <span class="doodle doodle-4">⋆</span>
+        <span class="doodle doodle-5">✿</span>
+        <span class="doodle doodle-6">♡</span>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-col">
+      <div class="sticky-note">
+        <div class="sticky-pin"></div>
+        <p class="sticky-text">
+          Graduation<br />
+          is not the end,<br />
+          it's the beginning<br />
+          of everything <span class="heart">♡</span>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SCALLOP BORDER -->
+  <div class="scallop-border">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none">
+      <path d="M0,40 L0,20 Q30,0 60,20 Q90,40 120,20 Q150,0 180,20 Q210,40 240,20 Q270,0 300,20 Q330,40 360,20 Q390,0 420,20 Q450,40 480,20 Q510,0 540,20 Q570,40 600,20 Q630,0 660,20 Q690,40 720,20 Q750,0 780,20 Q810,40 840,20 Q870,0 900,20 Q930,40 960,20 Q990,0 1020,20 Q1050,40 1080,20 Q1110,0 1140,20 Q1170,40 1200,20 L1200,40 Z" fill="#ffffff" />
+    </svg>
+  </div>
+
+</div>
+
+<!-- PAGE TRANSITION OVERLAY -->
+<div class="page-transition" id="pageTransition"></div>
+
+<script src="bgm.js"></script>
+
+<script>
+// ===== GENERATE STARS =====
+(function() {
+  const c = document.getElementById('starsContainer');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 98 + '%';
+    s.style.top = Math.random() * 96 + '%';
+    s.style.setProperty('--dur', (2.5 + Math.random() * 3) + 's');
+    s.style.setProperty('--delay', (Math.random() * 6) + 's');
+    c.appendChild(s);
+  }
+})();
+
+// ===== CINEMATIC PAGE TRANSITION =====
+(function() {
+  const btn = document.getElementById('startJourneyBtn');
+  if (!btn) return;
+
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    // Start background music on user interaction
+    localStorage.setItem('bgmMustPlay', 'true');
+    if (typeof window.bgmStart === 'function') {
+      window.bgmStart();
+    }
+
+    // Fade out the entire landing page content
+    const page = document.getElementById('page');
+    page.classList.add('fade-out-content');
+
+    // Show cinematic overlay (dark + sparkle animation)
+    const overlay = document.getElementById('pageTransition');
+    overlay.classList.add('active');
+
+    // Navigate after animation completes (700ms matches CSS transition)
+    setTimeout(function() {
+      window.location.href = 'story-viewer.html';
+    }, 700);
+  });
+})();
+
+// ===== PARALLAX MOUSE MOVE (subtle background shift) =====
+(function() {
+  const page = document.getElementById('page');
+  if (!page) return;
+
+  page.addEventListener('mousemove', (e) => {
+    const rect = page.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    page.style.backgroundPosition = `${50 + x * 1.5}% ${50 + y * 1.5}%`;
+  });
+
+  page.addEventListener('mouseleave', () => {
+    page.style.backgroundPosition = 'center center';
+  });
+})();
+</script>
+
+</body>
+</html>

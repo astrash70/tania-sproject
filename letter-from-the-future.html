@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>letter-from-the-future.html</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    margin:0;
+    overflow:hidden;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#f5f5f5;
+}
+
+.letter-page{
+    position:relative;
+    width:100vw;
+    height:100vh;
+
+    overflow:hidden;
+
+    background:url('foto/leter.png') center center no-repeat;
+    background-size:cover;
+}
+
+.envelope{
+    position:absolute;
+
+    left:68%;
+    top:55%;
+
+    transform:translate(-50%,-50%);
+
+    width:1850px;
+    height:auto;
+
+    z-index:10;
+
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+.envelope:hover{
+    transform:translate(-50%,-50%) scale(1.03);
+}
+
+.swirl-arrow{
+    position:absolute;
+    width:220px;
+
+    left:56%;
+    top:58%;
+
+    z-index:20;
+}
+
+.open-letter{
+    position:absolute;
+
+    left:68%;
+    top:88%;
+
+    transform:translateX(-50%);
+
+    color:#ff7eb6;
+
+    font-size:32px;
+    font-weight:700;
+
+    font-family:'Comic Sans MS', cursive;
+
+    z-index:1;
+
+    cursor:pointer;
+
+    animation:float 2s ease-in-out infinite;
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translateX(-50%) translateY(0);
+    }
+    50%{
+        transform:translateX(-50%) translateY(-8px);
+    }
+}
+
+.envelope-container{
+    position:absolute;
+    left:68%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:700px;
+    height:500px;
+
+    cursor:pointer;
+}
+
+.amplop-body{
+    position:absolute;
+    width:160%;
+    top:-70px;
+    left:-290px;
+    transform:translateX(100px);
+    z-index:3;
+}
+
+.flap-atas{
+    position:absolute;
+    width:160%;
+    top:-122px;
+    left: -190px;;
+    z-index:7;
+    transform-origin:top center;
+    transition:1s ease;
+}
+
+.flap-bawah{
+    position:absolute;
+    width:160%;
+    bottom:-270px;
+    left: -190px;;
+    z-index:6;
+    transform-origin:bottom center;
+    transition:1s ease;
+}
+
+.flap-kiri{
+    position:absolute;
+    width:138%;
+    top:0;
+    left:110px;
+    z-index:5;
+     transform-origin:top right;
+    transition:1s ease;
+}
+
+.flap-kanan{
+    position:absolute;
+    width:138%;
+    top:0;
+    left:-339px;
+    z-index:5;
+    transform-origin:top left;
+    transition:1s ease;
+}
+
+.paper{
+    position:absolute;
+
+    width:108%;
+    left:0%;
+    top:-6%;
+
+    z-index:4;
+
+    opacity:0;
+
+    backface-visibility:hidden;
+    transform-style:preserve-3d;
+    will-change:transform;
+
+    transform:translateY(20px) scale(0.3);
+
+    transition:1s ease;
+transform-style:preserve-3d;
+}
+
+.atas.open{
+    transform:translateY(-180px);
+}
+
+.kiri.open{
+    transform:translateX(-180px);
+}
+
+.kanan.open{
+    transform:translateX(180px);
+}
+
+.bawah.open{
+    transform:translateY(180px);
+}
+
+.page-hint{
+    position:absolute;
+
+    left:35%;
+    top:55%;
+
+    transform:translateY(-50%);
+
+    color:#88025d;
+
+    font-size:16px;
+
+    font-family:'Comic Sans MS', cursive;
+
+    font-weight:bold;
+
+    opacity:0;
+
+    transition:.8s;
+
+    z-index:5000;
+
+    pointer-events:none;
+}
+
+.hint-arrow{
+    position:absolute;
+
+    left:48%;
+    top:55%;
+
+    transform:translateY(-50%);
+
+    font-size:20px;
+
+    color:#80056a;
+
+    opacity:0;
+
+    z-index:5000;
+
+    animation:arrowMove 1s infinite alternate;
+}
+
+@keyframes arrowMove{
+
+    from{
+        transform:
+        translateY(-50%)
+        translateX(0);
+    }
+
+    to{
+        transform:
+        translateY(-50%)
+        translateX(-20px);
+    }
+
+}
+
+.page-controls{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:40px;
+
+    z-index:5000;
+
+    pointer-events:none;
+}
+
+.page-controls button{
+    border:none;
+
+    padding:12px 24px;
+
+    border-radius:30px;
+
+    background:#ffb6d9;
+
+    color:rgb(158, 6, 115);
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:0 4px 10px rgba(0,0,0,.15);
+
+    
+}
+
+#prevBtn{
+    position:fixed;
+
+    left:20px;
+    bottom:20px;
+
+    width:55px;
+    height:55px;
+
+    border-radius:50%;
+
+    pointer-events:auto;
+}
+
+#nextBtn{
+    position:fixed;
+
+    right:20px;
+    bottom:20px;
+
+    width:55px;
+    height:55px;
+
+    border-radius:50%;
+
+    pointer-events:auto;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="letter-page">
+
+    <div class="envelope-container">
+
+        <img src="foto/letter2.png" class="paper" id="paper">
+
+<img src="foto/amplop-body.png" class="amplop-body">
+
+<img src="foto/flap-atas.png" class="flap-atas">
+<img src="foto/flap-bawah.png" class="flap-bawah">
+<img src="foto/flap-kiri.png" class="flap-kiri">
+<img src="foto/flap-kanan.png" class="flap-kanan">
+
+    </div>
+
+    <div class="open-letter">
+        Open This Letter 💌
+    </div>
+
+    <div class="page-hint">
+    Double Click The Letter<br>
+    To Turn The Page ✨
+</div>
+
+<div class="hint-arrow">
+    ⟵ ••••••
+</div>
+
+<div class="page-controls">
+    
+
+    <button id="prevBtn">◀</button>
+<button id="nextBtn">▶</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+const envelope = document.querySelector(".envelope-container");
+const paper = document.getElementById("paper");
+
+const letters = [
+    "foto/letter1.png",
+    "foto/letter2.png",
+    "foto/letter3.png"
+];
+
+let currentLetter = 0;
+
+let isOpen = false;
+
+envelope.addEventListener("click",()=>{
+
+    const topFlap = document.querySelector(".flap-atas");
+const bottomFlap = document.querySelector(".flap-bawah");
+const leftFlap = document.querySelector(".flap-kiri");
+const rightFlap = document.querySelector(".flap-kanan");
+    const paper = document.querySelector(".paper");
+
+    if(!isOpen){
+
+    topFlap.style.transform =
+"translateY(269px) rotateX(-180deg)";
+
+bottomFlap.style.transform =
+"translateY(-277px) rotateX(180deg)";
+
+
+leftFlap.style.transform =
+"translateX(-410px) rotateY(180deg)";
+
+rightFlap.style.transform =
+"translateX(410px) rotateY(180deg)";
+
+
+paper.style.opacity = "1";
+
+const hint =
+document.querySelector(".page-hint");
+
+hint.style.opacity = "1";
+
+document.querySelector(".hint-arrow")
+.style.opacity = "1";
+
+setTimeout(()=>{
+    hint.style.opacity = "0";
+
+document.querySelector(".hint-arrow")
+.style.opacity = "0";
+},3000);
+
+document.querySelector(".open-letter").style.opacity = "0";
+
+paper.style.zIndex = "999";
+
+setTimeout(()=>{
+    paper.style.transform =
+    "translateY(-250px) scale(1)";
+},300);
+
+isOpen = true;
+
+}else{
+
+  paper.style.transform =
+"translateY(-120px) scale(0.3)";
+
+setTimeout(()=>{
+    paper.style.opacity = "0";
+    paper.style.zIndex = "4";
+},600);
+
+topFlap.style.transform =
+"translateY(0)";
+
+bottomFlap.style.transform =
+"translateY(0)";
+
+leftFlap.style.transform =
+"translateX(0)";
+
+rightFlap.style.transform =
+"translateX(0)";
+
+document.querySelector(".open-letter").style.opacity = "1";
+
+
+
+currentLetter = 0;
+paper.src = letters[0];
+
+isOpen = false;
+
+}
+
+});
+
+paper.addEventListener("click",(e)=>{
+
+    e.stopPropagation();
+
+    if(!isOpen) return;
+
+    if(currentLetter >= letters.length - 1)
+    return;
+
+    currentLetter++;
+
+    console.log(currentLetter);
+
+    paper.src = letters[currentLetter];
+
+});
+
+document
+.getElementById("nextBtn")
+.addEventListener("click",(e)=>{
+
+    e.stopPropagation();
+
+    if(currentLetter < letters.length-1){
+
+        currentLetter++;
+
+        paper.src = letters[currentLetter];
+
+    } else {
+
+        window.location.href = "cactus.html";
+
+    }
+
+});
+
+document
+.getElementById("prevBtn")
+.addEventListener("click",(e)=>{
+
+    e.stopPropagation();
+
+    if(currentLetter > 0){
+
+        currentLetter--;
+
+        paper.src = letters[currentLetter];
+    } else {
+
+        window.location.href = "story-viewer.html";
+
+    }
+
+});
+
+// Kiri/Kanan click navigation (gaya Instagram Story)
+document.addEventListener('click', (e) => {
+  // Skip jika klik berasal dari envelope, open-letter, atau tombol
+  if (e.target.closest('.envelope-container, .open-letter, button')) return;
+
+  const x = e.clientX;
+  const half = window.innerWidth / 2;
+
+  if (x < half) {
+    document.getElementById('prevBtn').click();
+  } else {
+    document.getElementById('nextBtn').click();
+  }
+});
+
+// Sembunyikan visual tombol navigasi, logika tetap jalan
+document.getElementById('prevBtn').style.cssText = 'opacity:0!important;pointer-events:none!important;';
+document.getElementById('nextBtn').style.cssText = 'opacity:0!important;pointer-events:none!important;';
+
+</script>
+
+<script src="bgm.js"></script>
+
+</body>
+</html>

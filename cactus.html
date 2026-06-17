@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cactus Page</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    width:100%;
+    min-height:100vh;
+    background:url("foto/cactus.png") center center/cover no-repeat;
+    font-family:'Poppins',sans-serif;
+
+    overflow-x:hidden;
+    overflow-y:auto;
+}
+
+.overlay{
+    width:100%;
+    height:100vh;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(2px);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.content{
+    color:white;
+    text-shadow:0 4px 15px rgba(0,0,0,0.3);
+}
+
+.content h1{
+    font-size:4rem;
+    margin-bottom:10px;
+}
+
+.content p{
+    font-size:2.2rem;
+    letter-spacing:1px;
+}
+
+.letter-text{
+    position:absolute;
+    top:180px;
+    left:490px;
+
+    width:1550px;
+
+    padding:50px 60px;
+
+    color:#070000;
+    font-size:22.5px;
+    line-height:2;
+
+    font-family:'Patrick Hand', cursive;
+
+    text-align:justify;
+
+    
+}
+.letter-text::-webkit-scrollbar{
+    width:8px;
+}
+
+.letter-text::-webkit-scrollbar-thumb{
+    background:#d8c49a;
+    border-radius:20px;
+}
+</style>
+</head>
+
+<body>
+    <button id="prevBtn" style="position:fixed;left:20px;bottom:20px;width:55px;height:55px;border-radius:50%;border:none;background:#ffb6d9;color:rgb(158,6,115);font-size:18px;font-weight:bold;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.15);z-index:9999;">◀</button>
+    <div class="letter-text" id="typing"></div>
+</div>
+<script>
+
+const text = `Kenapa kaktus?
+
+Honestly, gue pilih kaktus karena bagian ini bikin gue sedih sekaligus bikin gue ngerasa kecil banget as ur  friends.
+Karena ternyata gue nggak tahu banyak hal tentang lo.
+like a warna favorit lo apa, makanan favorit lo apa, bunga kesukaan lo apa. Bahkan hal-hal kecil yang harusnya mungkin gue tahu sebagai best cingu, ternyata banyak yang gue nggak tahu.
+
+Mungkin gue pernah dengar sepintas, pernah lo ceritain, atau pernah lewat di obrolan kita. Tapi gue nggak benar-benar nyimpen itu di memori gue sebagai sesuatu yang ternyata berarti banget buat lo.
+
+So... I'm sorry.
+
+Sorry karena gue nggak tahu banyak hal about you.
+
+Sorry kalau selama ini gue mungkin nggak cukup notice hal-hal yang lo suka, hal-hal kecil yang sebenarnya penting buat lo.
+
+Yang paling gue yakin cuma satu...
+
+Lo suka pecel sama sehun. atau malah ngga? bjirr 😭😂
+
+Literally itu informasi yang paling nempel di kepala gue.
+
+
+
+Makanya waktu mikir mau kasih apa, ujung-ujungnya gue kasih kaktus.
+
+Dan semakin gue pikirin, semakin gue merasa kaktus itu cocok buat lo.
+
+Karena buat gue, kaktus jadi simbol dari banyak hal yang gue pelajari dari lo.
+
+Kaktus bisa hidup di kondisi yang nggak selalu mudah.
+
+Dia tetap tumbuh walaupun lingkungannya keras.
+
+Dia punya boundaries yang jelas buat melindungi dirinya yang lunak like you.
+
+Tapi di saat yang sama, dia tetap hidup, tetap kuat, dan tetap bertahan.
+
+And honestly, that's how I see you.
+
+
+
+Jadi semua hal baik yang direpresentasikan oleh kaktus, gue pengen itu jadi doa dan harapan gue buat lo.
+
+Semoga ke depannya lo selalu kuat menghadapi apa pun.
+
+Semoga lo bisa terus tumbuh di kondisi apa pun.
+
+Semoga lo selalu bisa menjaga diri lo sendiri tanpa kehilangan kebaikan hati yang lo punya.
+
+Dan yang paling penting...
+
+Kaktus itu hidup lama.
+
+And that's exactly my wish for you.
+
+
+
+Please hidup yang lama ya.
+
+Jangan mati dulu. 😭
+
+Masih banyak hal yang harus kita lakukan.
+
+Kita masih harus keliling dunia.
+
+Kita masih harus nonton konser EXO bareng.
+
+Kita masih harus saling ngabarin pas akhirnya sampai di kota impian masing-masing.
+
+Gue masih mau dapet chat dari lo yang bilang,
+
+"Gue udah sampai Edinburgh."
+
+Dan gue juga pengen suatu hari bisa bilang ke lo,
+
+"Tania, gue akhirnya bisa ketemu Mark."
+
+Atau,
+
+"Tania, gue akhirnya bisa ke Kanada, tempat yang dari dulu banget gue pengen datengin dan jadi salah satu impian terbesar gue."
+
+Dan siapa tahu, maybe someday kita bisa ngunjungin tempat-tempat itu bareng.
+
+
+
+Imagine that.
+
+Dua orang yang dulu asing, ga kenal satu sama lain  bahkan gatau kalo masing masing dari kita itu hidup, tiba tiba dipertemukan dengan sedemikian rupa trus tiba tiba ngobrol soal mimpi, i hope suatu hari benar-benar bisa realisasiin our dreams.
+
+I really, really hope that happens.
+
+Karena dari semua kemungkinan yang ada di hidup ini, gue berharap itu jadi salah satu cerita yang beneran kita jalanin.
+
+In this one life that we have, I hope we get to see our dreams come true together.
+
+i'am so proud of you, congratulations🤍✨🌵`;
+
+const typing = document.getElementById("typing");
+
+let i = 0;
+
+function typeWriter(){
+    if(i < text.length){
+        typing.textContent += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, 20);
+    }
+}
+
+typeWriter();
+
+document.getElementById("prevBtn").addEventListener("click", function() {
+    window.location.href = "letter-from-the-future.html";
+});
+
+// Kiri/Kanan click navigation (gaya Instagram Story)
+document.addEventListener('click', (e) => {
+  // Skip jika klik berasal dari tombol
+  if (e.target.closest('button')) return;
+
+  const x = e.clientX;
+  const half = window.innerWidth / 2;
+
+  if (x < half) {
+    window.location.href = "letter-from-the-future.html";
+  } else {
+    window.location.href = "anyeong.html";
+  }
+});
+
+// Sembunyikan visual tombol navigasi, logika tetap jalan
+document.getElementById('prevBtn').style.cssText = 'opacity:0!important;pointer-events:none!important;';
+
+</script>
+
+<script src="bgm.js"></script>
+
+</body>
+</html>

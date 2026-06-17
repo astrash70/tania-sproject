@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Story Viewer</title>
+<style>
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #0d1b3d;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== PAGE WRAPPER ===== */
+.page-viewer {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: viewerFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes viewerFadeIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ===== BLURRED BACKGROUND ===== */
+.blur-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center center;
+  filter: blur(20px) brightness(0.35);
+  transform: scale(1.1);
+  transition: background-image 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== IMAGE CONTAINER ===== */
+.image-stage {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  position:relative;
+  overflow:hidden;
+}
+
+.image-stage img {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: opacity 0.45s ease;
+  opacity: 1;
+}
+
+.image-stage img.fade-out {
+  opacity: 0;
+}
+
+.image-stage img.fade-in {
+  opacity: 1;
+}
+
+/* ===== NAVIGATION BUTTONS (image-based, bottom corners) ===== */
+.nav-arrow {
+  position: fixed;
+  z-index: 10;
+  bottom: 20px;
+  width: 46px;
+  height: 46px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-arrow img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.25s ease;
+  mix-blend-mode: multiply;
+}
+
+.nav-arrow:hover img {
+  transform: scale(1.05);
+}
+
+.nav-arrow:active img {
+  transform: scale(0.95);
+}
+
+.nav-arrow.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav-prev {
+  left: 20px;
+}
+
+.nav-next {
+  right: 20px;
+}
+
+/* ===== PAGE INDICATOR ===== */
+.page-dots {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.dot.active {
+  width: 24px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* ===== PAGE NUMBER TEXT ===== */
+.page-number {
+  position: fixed;
+  bottom: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== HIT AREA HINT ===== */
+.touch-hint {
+  position: fixed;
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-size: 11px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.15);
+  letter-spacing: 1px;
+  opacity: 0;
+  animation: hintFade 4s ease forwards;
+}
+
+@keyframes hintFade {
+  0%, 70% { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+
+/* ===== TUTORIAL OVERLAY (visual onboarding) ===== */
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+.hint-side {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.hint-side--left {
+  left: 2%;
+}
+
+.hint-side--right {
+  right: 2%;
+}
+
+.hint-side.visible {
+  opacity: 1;
+}
+
+.rings {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(50, 80, 170, 0.35);
+  box-shadow: 0 0 10px rgba(40, 60, 150, 0.2);
+  animation: ringPulse 2.4s ease-in-out infinite;
+}
+
+.ring:nth-child(1) { width: 44px; height: 44px; animation-delay: 0s; }
+.ring:nth-child(2) { width: 72px; height: 72px; animation-delay: 0.25s; }
+.ring:nth-child(3) { width: 100px; height: 100px; animation-delay: 0.5s; }
+.ring:nth-child(4) { width: 128px; height: 128px; animation-delay: 0.75s; }
+.ring:nth-child(5) { width: 156px; height: 156px; animation-delay: 1s; }
+.ring:nth-child(6) { width: 184px; height: 184px; animation-delay: 1.25s; }
+
+@keyframes ringPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+    border-color: rgba(50, 80, 170, 0.25);
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+    border-color: rgba(70, 110, 210, 0.55);
+    box-shadow: 0 0 20px rgba(40, 60, 150, 0.35);
+  }
+}
+
+.hint-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  color: rgba(80, 120, 220, 0.9);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-align: center;
+  line-height: 1.6;
+  text-shadow: 0 0 10px rgba(20, 40, 100, 0.5);
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .hint-side--left { left: 1%; }
+  .hint-side--right { right: 1%; }
+  .rings { width: 150px; height: 150px; }
+  .ring:nth-child(1) { width: 32px; height: 32px; }
+  .ring:nth-child(2) { width: 54px; height: 54px; }
+  .ring:nth-child(3) { width: 76px; height: 76px; }
+  .ring:nth-child(4) { width: 98px; height: 98px; }
+  .ring:nth-child(5) { width: 120px; height: 120px; }
+  .ring:nth-child(6) { width: 142px; height: 142px; }
+  .hint-label { font-size: 11px; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .nav-arrow {
+    width: 40px;
+    height: 40px;
+    bottom: 16px;
+  }
+  .nav-prev { left: 12px; }
+  .nav-next { right: 12px; }
+
+  .image-stage { padding: 0; }
+
+  .page-dots { bottom: 20px; gap: 8px; }
+  .dot { width: 6px; height: 6px; }
+  .dot.active { width: 18px; }
+  .page-number { bottom: 44px; font-size: 11px; }
+}
+
+@media (max-width: 400px) {
+  .nav-arrow {
+    width: 34px;
+    height: 34px;
+    bottom: 12px;
+  }
+  .nav-prev { left: 8px; }
+  .nav-next { right: 8px; }
+}
+
+/* ===== TOUCH ZONE TAP TARGETS ===== */
+.touch-zone {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 30%;
+  z-index: 5;
+  cursor: pointer;
+}
+
+.touch-zone-left {
+  left: 0;
+}
+
+.touch-zone-right {
+  right: 0;
+}
+
+@media (min-width: 601px) {
+  .touch-zone {
+    display: none;
+  }
+}
+
+.future-photo{
+    position:fixed;
+    right:170px;
+    top:240px;
+    width:340px;
+    height:475px;
+
+    transform: scale(1.8);
+    transform-origin: center center;
+
+    display:none;
+    z-index:9999;
+}
+
+.slide3-polaroids {
+    pointer-events: none;
+}
+
+#ediSlide{
+    position:absolute;
+    top:60px;
+    left:35px;
+    width:270px;
+    height:330px;
+    object-fit:cover;
+    border-radius:4px;
+    transition: opacity 1.4s ease;
+    transform: rotate(5.7deg);
+
+    z-index:1;
+}
+.edi-frame{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+
+    z-index:2;
+}
+
+#bgVideo{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:1;
+}
+
+#mainImage{
+    position:relative;
+    z-index:2;
+    transform: translateZ(0);
+}
+
+.han-wrap{
+    position:fixed;
+    left:130px;
+    top:355px;
+    width:550px;
+    height:800px;
+    z-index:999;
+  
+}
+
+.food-wrap{
+    position:fixed;
+    left:1265px;
+    top:320px;
+    width:555px;
+    height:920px;
+    z-index:999;
+    transform: rotate(1deg);
+}
+
+.myeong-wrap{
+    position:fixed;
+    left:1750px;
+    top:445px;
+    width:520px;
+    height:720px;
+    z-index:999;
+}
+
+.han-frame,
+.food-frame,
+.myeong-frame{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:2;
+}
+
+#hanSlide{
+    position:absolute;
+    top:100px;
+    left:70px;
+    width:420px;
+    height:550px;
+    object-fit:cover;
+    transition: opacity 1.4s ease;
+    transform: rotate(-4deg);
+}
+
+#foodSlide{
+    position:absolute;
+    top: 230px;;
+    left: 110px;;
+    width:370px;
+    height:470px;
+    object-fit:cover;
+    transition: opacity 1.4s ease;
+    transform: rotate(5.7deg);
+}
+
+#myeongSlide{
+    position:absolute;
+    top:100px;
+    left:70px;
+    width:380px;
+    height:490px;
+    object-fit:cover;
+    transition: opacity 1.4s ease;
+    transform: rotate(5.7deg);
+}
+
+</style>
+</head>
+<body>
+
+<!-- BLURRED BACKGROUND -->
+<div class="blur-bg" id="blurBg"></div>
+
+<!-- VIEWER -->
+<div class="page-viewer">
+
+  <!-- IMAGE STAGE -->
+  <div class="image-stage" id="imageStage">
+
+    <video id="bgVideo"
+       autoplay
+       loop
+       playsinline>
+    autoplay
+    loop
+    playsinline>
+        <source src="foto/EXO.mp4" type="video/mp4">
+    </video>
+
+    <img id="mainImage" src="foto/a.png" alt="Page" draggable="false" />
+
+</div>
+
+  <div class="future-photo">
+    <img id="ediSlide" src="foto/edi1.jpg">
+    <img class="edi-frame" src="foto/edi.png">
+</div>
+
+<div class="slide3-polaroids">
+
+  <!-- HAN -->
+  <div class="han-wrap">
+      <img id="hanSlide" src="foto/han1.png">
+      <img class="han-frame" src="foto/han.png">
+  </div>
+
+  <!-- FOOD -->
+  <div class="food-wrap">
+      <img id="foodSlide" src="foto/food1.png">
+      <img class="food-frame" src="foto/food.png">
+  </div>
+
+  <!-- MYEONG -->
+  <div class="myeong-wrap">
+      <img id="myeongSlide" src="foto/myeong1.png">
+      <img class="myeong-frame" src="foto/myeong.png">
+  </div>
+
+</div>
+
+  <!-- TOUCH ZONES (mobile) -->
+  <div class="touch-zone touch-zone-left" id="touchPrev"></div>
+  <div class="touch-zone touch-zone-right" id="touchNext"></div>
+
+  <!-- NAV BUTTONS (image-based, bottom corners) -->
+  <button class="nav-arrow nav-prev" id="prevBtn">
+    <img src="foto/back.png" alt="Previous" />
+  </button>
+  <button class="nav-arrow nav-next" id="nextBtn">
+    <img src="foto/next.png" alt="Next" />
+  </button>
+
+  <!-- PAGE NUMBER -->
+  <div class="page-number" id="pageNumber">01 / 04</div>
+
+  <!-- PAGE DOTS -->
+  <div class="page-dots" id="pageDots">
+    <span class="dot active" data-index="0"></span>
+    <span class="dot" data-index="1"></span>
+    <span class="dot" data-index="2"></span>
+    <span class="dot" data-index="3"></span>
+  </div>
+
+  <!-- TOUCH HINT -->
+  <div class="touch-hint">↔ swipe to navigate</div>
+
+</div>
+
+<!-- TUTORIAL OVERLAY (visual onboarding, radar pulse rings) -->
+<div class="tutorial-overlay" id="tutorialOverlay">
+
+  <!-- LEFT HINT -->
+  <div class="hint-side hint-side--left" id="hintLeft">
+    <div class="rings">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="hint-label">Tap Left<br>Go Back</div>
+    </div>
+  </div>
+
+  <!-- RIGHT HINT -->
+  <div class="hint-side hint-side--right" id="hintRight">
+    <div class="rings">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="hint-label">Tap Right<br>Continue Journey</div>
+    </div>
+  </div>
+
+</div>
+
+<script src="bgm.js"></script>
+
+<script>
+(function() {
+  const pages = [
+    'foto/a.png',
+    'foto/b.png',
+    'foto/c.png',
+    'foto/d.png'
+  ];
+
+  let current = 0;
+  const mainImg = document.getElementById('mainImage');
+  const blurBg  = document.getElementById('blurBg');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const pageNum = document.getElementById('pageNumber');
+  const dots    = document.querySelectorAll('.dot');
+  const touchPrev = document.getElementById('touchPrev');
+  const touchNext = document.getElementById('touchNext');
+  const futurePhoto = document.querySelector('.future-photo');
+  const bgVideo = document.getElementById('bgVideo');
+
+  let isTransitioning = false;
+
+  // Preload all images for instant switching
+  const preloaded = [];
+  pages.forEach(src => {
+    const img = new Image();
+    img.src = src;
+    preloaded.push(img);
+  });
+
+  // Set blurred background
+  function setBlur(src) {
+    blurBg.style.backgroundImage = `url('${src}')`;
+  }
+
+  // Navigate to page
+  function goTo(index) {
+    if (isTransitioning) return;
+    if (index < 0 || index >= pages.length) {
+      // Jika next dari slide terakhir, buka Letter From The Future
+      if (index >= pages.length && current === pages.length - 1) {
+        window.location.href = 'letter-from-the-future.html';
+      }
+      // Jika previous dari slide pertama, kembali ke landing
+      if (index < 0 && current === 0) {
+        window.location.href = 'index.html';
+      }
+      return;
+    }
+    isTransitioning = true;
+
+    const newSrc = pages[index];
+
+    // Fade out
+    mainImg.classList.add('fade-out');
+
+    setTimeout(() => {
+      // Swap image
+      mainImg.src = newSrc;
+      setBlur(newSrc);
+
+      // Update UI immediately
+      current = index;
+      updateUI();
+
+      // Fade in
+      requestAnimationFrame(() => {
+        mainImg.classList.remove('fade-out');
+        mainImg.classList.add('fade-in');
+
+        setTimeout(() => {
+          mainImg.classList.remove('fade-in');
+          isTransitioning = false;
+        }, 450);
+      });
+    }, 400);
+  }
+
+  // Update buttons, dots, page number
+ function updateUI() {
+    prevBtn.classList.toggle('hidden', current === 0);
+    nextBtn.classList.toggle('hidden', current === pages.length - 1);
+
+    pageNum.textContent =
+      String(current + 1).padStart(2, '0') +
+      ' / ' +
+      String(pages.length).padStart(2, '0');
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === current);
+    });
+
+    // tampil hanya di slide ke-2 (b.png)
+    futurePhoto.style.display =
+      current === 1 ? 'block' : 'none';
+
+      if (current === 3) {
+    // Slide 4: pause background music, play EXO video
+    if (window.bgmPause) window.bgmPause();
+    bgVideo.style.display = 'block';
+    bgVideo.muted = false;
+    bgVideo.play().catch(() => {});
+    mainImg.style.display = 'block';
+} else {
+    // Resume background music when leaving slide 4
+    if (window.bgmResume) window.bgmResume();
+    bgVideo.style.display = 'none';
+    bgVideo.pause();
+    bgVideo.muted = true;
+    mainImg.style.display = 'block';
+}
+const slide3Polaroids =
+document.querySelector('.slide3-polaroids');
+
+slide3Polaroids.style.display =
+    current === 2 ? 'block' : 'none';
+}
+
+
+  // Event listeners
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+
+  touchPrev.addEventListener('click', () => goTo(current - 1));
+  touchNext.addEventListener('click', () => goTo(current + 1));
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const idx = parseInt(dot.dataset.index);
+      goTo(idx);
+    });
+  });
+
+  // Keyboard arrows
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      goTo(current - 1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      goTo(current + 1);
+    }
+  });
+
+  // Kiri/Kanan click navigation (gaya Instagram Story)
+  document.addEventListener('click', (e) => {
+    // Skip jika klik berasal dari tombol navigasi, dots, atau touch-zone
+    if (e.target.closest('.nav-arrow, .dot, .touch-zone, .page-dots')) return;
+
+    const x = e.clientX;
+    const half = window.innerWidth / 2;
+
+    if (x < half) {
+      goTo(current - 1);
+    } else {
+      goTo(current + 1);
+    }
+  });
+
+  // Touch swipe support
+  let touchStartX = 0;
+  let touchEndX = 0;
+  let isSwiping = false;
+
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    isSwiping = true;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!isSwiping) return;
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    if (!isSwiping) return;
+    isSwiping = false;
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    const threshold = 50;
+
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        goTo(current + 1);
+      } else {
+        goTo(current - 1);
+      }
+    }
+  }, { passive: true });
+
+  // Initialize
+  setBlur(pages[0]);
+  updateUI();
+
+  // Sembunyikan visual tombol navigasi, logika tetap jalan
+  prevBtn.style.cssText = 'opacity:0!important;pointer-events:none!important;';
+  nextBtn.style.cssText = 'opacity:0!important;pointer-events:none!important;';
+
+  // === TUTORIAL OVERLAY TIMING ===
+  (function showTutorial() {
+    const overlay = document.getElementById('tutorialOverlay');
+    const leftEl  = document.getElementById('hintLeft');
+    const rightEl = document.getElementById('hintRight');
+    if (!overlay || !leftEl || !rightEl) return;
+
+    // STEP 1: show left hint after a short delay
+    setTimeout(() => {
+      leftEl.classList.add('visible');
+    }, 400); // wait for page fade-in
+
+    // STEP 2: hide left hint after 5s, then show right hint
+    setTimeout(() => {
+      leftEl.classList.remove('visible');
+    }, 5400);
+
+    // STEP 3: show right hint after left has faded out
+    setTimeout(() => {
+      rightEl.classList.add('visible');
+    }, 6000); // 400 + 5000 + 600 fade transition
+
+    // STEP 4: hide right hint after 5s, then remove overlay
+    setTimeout(() => {
+      rightEl.classList.remove('visible');
+    }, 11000); // 6000 + 5000
+
+    // STEP 5: remove overlay from DOM after all done
+    setTimeout(() => {
+      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    }, 11700); // 11000 + 700 fade
+  })();
+})();
+
+const ediPhotos = [
+    'foto/edi1.jpg',
+    'foto/edi2.jpg',
+    'foto/edi3.jpg',
+    'foto/edi4.jpg',
+    'foto/edi5.jpg'
+];
+
+let ediIndex = 0;
+const ediSlide = document.getElementById('ediSlide');
+
+    // Edi slideshow — horizontal slide via CSS transition (left + opacity)
+// Only #ediSlide moves; .edi-frame stays untouched
+setInterval(() => {
+    // Step 1: fade out
+    ediSlide.style.opacity = '0';
+
+    setTimeout(() => {
+        // Step 2: swap image
+        ediIndex = (ediIndex + 1) % ediPhotos.length;
+        ediSlide.src = ediPhotos[ediIndex];
+
+        // Ensure opacity is 0 before fading in
+        ediSlide.style.opacity = '0';
+
+        // Force reflow
+        void ediSlide.offsetHeight;
+
+        // Step 3: fade in
+        ediSlide.style.opacity = '1';
+    }, 1400); // matches transition duration
+}, 4000);
+
+const hanPhotos = [
+  'foto/han1.png',
+  'foto/han2.png',
+  'foto/han3.png',
+  'foto/han4.png',
+  'foto/han5.png'
+];
+
+const foodPhotos = [
+  'foto/food1.png',
+  'foto/food2.png',
+  'foto/food3.png',
+  'foto/food4.png',
+  'foto/food5.png'
+];
+
+const myeongPhotos = [
+  'foto/myeong1.png',
+  'foto/myeong2.png',
+  'foto/myeong3.png',
+  'foto/myeong4.jpg',
+  'foto/myeong5.jpg'
+];
+
+let hanIndex = 0;
+let foodIndex = 0;
+let myeongIndex = 0;
+
+const hanSlide = document.getElementById('hanSlide');
+const foodSlide = document.getElementById('foodSlide');
+const myeongSlide = document.getElementById('myeongSlide');
+
+// Han/Food/Myeong slideshow — horizontal slide via CSS transition
+// Only the img elements move; frames stay untouched
+setInterval(() => {
+    // Step 1: fade out
+    hanSlide.style.opacity = '0';
+    foodSlide.style.opacity = '0';
+    myeongSlide.style.opacity = '0';
+
+    setTimeout(() => {
+        // Step 2: swap images
+        hanIndex = (hanIndex + 1) % hanPhotos.length;
+        foodIndex = (foodIndex + 1) % foodPhotos.length;
+        myeongIndex = (myeongIndex + 1) % myeongPhotos.length;
+
+        hanSlide.src = hanPhotos[hanIndex];
+        foodSlide.src = foodPhotos[foodIndex];
+        myeongSlide.src = myeongPhotos[myeongIndex];
+
+        // Ensure opacity is 0 before fading in
+        hanSlide.style.opacity = '0';
+        foodSlide.style.opacity = '0';
+        myeongSlide.style.opacity = '0';
+
+        // Force reflow
+        void hanSlide.offsetHeight;
+
+        // Step 3: fade in
+        hanSlide.style.opacity = '1';
+        foodSlide.style.opacity = '1';
+        myeongSlide.style.opacity = '1';
+    }, 1400); // matches transition duration
+}, 4000);
+
+
+</script>
+</body>
+</html>

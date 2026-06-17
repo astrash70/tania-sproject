@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANYEONG 💗</title>
+  <!-- Google Fonts: Dancing Script for brush handwritten look, Quicksand for clean subtitle -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #0a0e27 0%, #11163d 40%, #0d1b3e 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Quicksand', sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ===== STARS (twinkling) ===== */
+    .stars-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.4);
+      animation: twinkle var(--duration, 3s) ease-in-out infinite alternate;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes twinkle {
+      0%   { opacity: 0.2; transform: scale(0.6); }
+      50%  { opacity: 1;   transform: scale(1.2); }
+      100% { opacity: 0.3; transform: scale(0.8); }
+    }
+
+    /* ===== GLOWING PARTICLES ===== */
+    .particles-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: var(--p-size, 4px);
+      height: var(--p-size, 4px);
+      background: radial-gradient(circle, rgba(255, 200, 255, 0.8), transparent);
+      border-radius: 50%;
+      animation: floatUp var(--p-duration, 12s) linear infinite;
+      animation-delay: var(--p-delay, 0s);
+      left: var(--p-left, 50%);
+      opacity: 0;
+    }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 0.7; }
+      90%  { opacity: 0.5; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    /* ===== SLOW FLOATING HEARTS ===== */
+    .hearts-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: var(--h-size, 14px);
+      color: rgba(255, 105, 180, 0.35);
+      animation: heartFloat var(--h-duration, 25s) linear infinite;
+      animation-delay: var(--h-delay, 0s);
+      left: var(--h-left, 50%);
+      user-select: none;
+    }
+
+    @keyframes heartFloat {
+      0%   { transform: translateY(100vh) rotate(0deg) scale(0.6); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-10vh) rotate(15deg) scale(1); opacity: 0; }
+    }
+
+    /* ===== SPARKLES ===== */
+    .sparkle {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      pointer-events: none;
+      z-index: 0;
+      animation: sparkleAnim var(--s-duration, 4s) ease-in-out infinite;
+      animation-delay: var(--s-delay, 0s);
+    }
+
+    .sparkle::before,
+    .sparkle::after {
+      content: '';
+      position: absolute;
+      background: rgba(255, 215, 255, 0.7);
+    }
+
+    .sparkle::before {
+      width: 100%;
+      height: 2px;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      border-radius: 2px;
+      box-shadow: 0 0 4px 1px rgba(255, 200, 255, 0.5);
+    }
+
+    .sparkle::after {
+      width: 2px;
+      height: 100%;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+      border-radius: 2px;
+      box-shadow: 0 0 4px 1px rgba(255, 200, 255, 0.5);
+    }
+
+    @keyframes sparkleAnim {
+      0%   { opacity: 0; transform: scale(0.3) rotate(0deg); }
+      50%  { opacity: 1; transform: scale(1)     rotate(180deg); }
+      100% { opacity: 0; transform: scale(0.3)   rotate(360deg); }
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeInContent 1.5s ease-out forwards;
+    }
+
+    @keyframes fadeInContent {
+      0%   { opacity: 0; transform: scale(0.9) translateY(20px); }
+      100% { opacity: 1; transform: scale(1)   translateY(0); }
+    }
+
+    /* "ANYEONG" — big bold brush handwriting */
+    .title {
+      font-family: 'Dancing Script', cursive;
+      font-weight: 700;
+      font-size: clamp(4rem, 18vw, 12rem);
+      color: #ff4d94;
+      text-shadow:
+        0 0 20px rgba(255, 77, 148, 0.4),
+        0 0 60px rgba(255, 77, 148, 0.2),
+        0 4px 12px rgba(0, 0, 0, 0.3);
+      letter-spacing: 2px;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+      user-select: none;
+    }
+
+    /* Subtitle */
+    .subtitle {
+      font-family: 'Dancing Script', cursive;
+      font-weight: 400;
+      font-size: clamp(1rem, 3vw, 1.6rem);
+      color: rgba(255, 255, 255, 0.8);
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+      max-width: 90vw;
+      line-height: 1.6;
+    }
+
+    /* Waving hand emoji */
+    .wave-emoji {
+      display: inline-block;
+      font-size: inherit;
+      animation: waveHand 1.2s ease-in-out infinite;
+      transform-origin: 70% 70%;
+    }
+
+    @keyframes waveHand {
+      0%   { transform: rotate(0deg);   }
+      25%  { transform: rotate(20deg);  }
+      50%  { transform: rotate(0deg);   }
+      75%  { transform: rotate(20deg);  }
+      100% { transform: rotate(0deg);   }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      .title {
+        font-size: clamp(3rem, 20vw, 5rem);
+      }
+      .subtitle {
+        font-size: clamp(0.85rem, 4vw, 1.1rem);
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== DECORATIVE ELEMENTS ===== -->
+
+  <!-- Twinkling Stars -->
+  <div class="stars-container" id="starsContainer"></div>
+
+  <!-- Glowing Particles -->
+  <div class="particles-container" id="particlesContainer"></div>
+
+  <!-- Slow Floating Hearts -->
+  <div class="hearts-container" id="heartsContainer"></div>
+
+  <!-- Sparkles -->
+  <div class="sparkles-container" id="sparklesContainer"></div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="content">
+    <div class="title">ANYEONG</div>
+    <div class="subtitle">
+      Thankyou udah meluangkan waktu buat liat hal sepele ini, bye bye&nbsp;
+      <span class="wave-emoji">👋</span>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // Helper: random number between min & max
+    // ============================================================
+    function rand(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    // ============================================================
+    // Generate Stars
+    // ============================================================
+    (function createStars() {
+      const container = document.getElementById('starsContainer');
+      const count = 80;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = rand(1.5, 4);
+        star.style.width  = size + 'px';
+        star.style.height = size + 'px';
+        star.style.left   = rand(0, 100) + '%';
+        star.style.top    = rand(0, 100) + '%';
+        star.style.setProperty('--duration', rand(2, 5) + 's');
+        star.style.setProperty('--delay', rand(0, 6) + 's');
+        container.appendChild(star);
+      }
+    })();
+
+    // ============================================================
+    // Generate Glowing Particles
+    // ============================================================
+    (function createParticles() {
+      const container = document.getElementById('particlesContainer');
+      const count = 25;
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = rand(3, 8);
+        p.style.setProperty('--p-size', size + 'px');
+        p.style.setProperty('--p-left', rand(0, 100) + '%');
+        p.style.setProperty('--p-duration', rand(15, 30) + 's');
+        p.style.setProperty('--p-delay', rand(0, 20) + 's');
+        container.appendChild(p);
+      }
+    })();
+
+    // ============================================================
+    // Generate Slow Floating Hearts
+    // ============================================================
+    (function createHearts() {
+      const container = document.getElementById('heartsContainer');
+      const count = 12;
+      for (let i = 0; i < count; i++) {
+        const h = document.createElement('div');
+        h.className = 'heart';
+        h.textContent = '♥';
+        h.style.setProperty('--h-size', rand(10, 24) + 'px');
+        h.style.setProperty('--h-left', rand(0, 100) + '%');
+        h.style.setProperty('--h-duration', rand(25, 45) + 's');
+        h.style.setProperty('--h-delay', rand(0, 30) + 's');
+        container.appendChild(h);
+      }
+    })();
+
+    // ============================================================
+    // Generate Sparkles
+    // ============================================================
+    (function createSparkles() {
+      const container = document.getElementById('sparklesContainer');
+      const count = 15;
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        s.style.left   = rand(2, 98) + '%';
+        s.style.top    = rand(2, 98) + '%';
+        s.style.setProperty('--s-duration', rand(3, 7) + 's');
+        s.style.setProperty('--s-delay', rand(0, 8) + 's');
+        container.appendChild(s);
+      }
+    })();
+
+    // ============================================================
+    // Auto-redirect to graduation-landing.html after 5 seconds
+    // ============================================================
+    setTimeout(function() {
+      window.location.href = 'graduation-landing.html';
+    }, 10000);
+  </script>
+
+<script src="bgm.js"></script>
+</body>
+</html>
